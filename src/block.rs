@@ -13,13 +13,13 @@ pub struct Block {
 }
 
 impl Block {
-    pub fn new(index: u64, previous_hash: String, mut data: String) -> Self {
+    pub async fn new(index: u64, previous_hash: String, mut data: String) -> Self {
         let timestamp = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis();
         let nonce = 0;
 
         let mut sol_block_height:u64 = 0;
         
-        match fetch_block_height() {
+        match fetch_block_height().await {
             Ok(rpc_response) => {
                 println!("Current Solana Block Height: {}", rpc_response.result);
                 sol_block_height = rpc_response.result;

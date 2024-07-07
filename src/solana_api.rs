@@ -1,6 +1,6 @@
 
 use serde::Deserialize;
-use reqwest::blocking::Client;
+use reqwest::Client;
 use std::error::Error;
 
 
@@ -10,7 +10,7 @@ pub struct RpcResponse {
     // You can add more fields if needed, such as error, id, jsonrpc, etc.
 }
 
-pub fn fetch_block_height() -> Result<RpcResponse, Box<dyn Error>> {
+pub async fn fetch_block_height() -> Result<RpcResponse, Box<dyn Error>> {
     let client = Client::new();
     let response = client.post("https://api.mainnet-beta.solana.com")
         .json(&serde_json::json!({
@@ -19,7 +19,8 @@ pub fn fetch_block_height() -> Result<RpcResponse, Box<dyn Error>> {
             "method": "getBlockHeight",
             "params": []
         }))
-        .send()?
-        .json::<RpcResponse>()?;
+        .send().await?
+        .json::<RpcResponse>()
+        .await?;
     Ok(response)
 }
